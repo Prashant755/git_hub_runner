@@ -60,6 +60,4 @@ jobs:
       # - name: Terraform Apply
       #   if: ${{ inputs.apply == true }}
       #   run: terraform apply -auto-approve tfplan
-      # Step 9: Terraform Apply
-      - name: Terraform destroy
-        run: terraform destroy -auto-approve 
+  
