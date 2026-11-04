@@ -4,6 +4,6 @@ resource "aws_instance" "name" {
 
 
   tags = {
-    Name = "prashant-ec-2-runner"
+    Name = "prashant-ec-2-runner-new"
   }
 }
