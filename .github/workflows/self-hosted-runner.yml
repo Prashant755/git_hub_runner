@@ -44,13 +44,13 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      # # Step 6: Terraform Format
-      # - name: Terraform Format
-      #   run: terraform fmt -check -recursive
+      # Step 6: Terraform Format
+      - name: Terraform Format
+        run: terraform fmt -check -recursive
 
-      # # Step 7: Terraform Validate
-      # - name: Terraform Validate
-      #   run: terraform validate
+      # Step 7: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
 
       # Step 8: Terraform Plan
       - name: Terraform Plan
