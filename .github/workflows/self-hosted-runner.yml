@@ -1,20 +1,25 @@
+```yaml
 name: Terraform EC2 Deployment
 
 on:
   workflow_dispatch:
     inputs:
-      apply:
-        description: "Apply Terraform changes?"
+      action:
+        description: "Select Terraform action"
         required: true
-        type: boolean
-        default: false
+        type: choice
+        options:
+          - plan
+          - apply
+          - destroy
+        default: plan
 
 permissions:
   contents: read
 
 jobs:
   terraform:
-    name: Terraform EC2 Deployment
+    name: Terraform EC2 Management
     runs-on: self-hosted
 
     steps:
@@ -46,8 +51,14 @@ jobs:
         run: terraform validate
 
       - name: Terraform Plan
-        run: terraform plan -out=tfplan
+        if: ${{ inputs.action == 'plan' }}
+        run: terraform plan
 
       - name: Terraform Apply
-        if: ${{ inputs.apply == true }}
-        run: terraform apply -auto-approve tfplan
+        if: ${{ inputs.action == 'apply' }}
+        run: terraform apply -auto-approve
+
+      - name: Terraform Destroy
+        if: ${{ inputs.action == 'destroy' }}
+        run: terraform destroy -auto-approve
+```
