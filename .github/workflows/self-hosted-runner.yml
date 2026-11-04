@@ -1,0 +1,62 @@
+name: Terraform EC2 Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      apply:
+        description: "Apply Terraform changes?"
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+jobs:
+  terraform:
+    name: Terraform EC2 Deployment
+    runs-on: self-hosted
+
+    steps:
+      # Step 1: Checkout repository
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Step 2: Install Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.17.1
+
+      # Step 3: Configure AWS credentials
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 4: Verify AWS identity
+      - name: Verify AWS Identity
+        run: aws sts get-caller-identity
+
+      # Step 5: Terraform Init
+      - name: Terraform Init
+        run: terraform init
+
+      # Step 6: Terraform Format
+      - name: Terraform Format
+        run: terraform fmt -check
+
+      # Step 7: Terraform Validate
+      - name: Terraform Validate
+        run: terraform validate
+
+      # Step 8: Terraform Plan
+      - name: Terraform Plan
+        run: terraform plan -out=tfplan
+
+      # Step 9: Terraform Apply
+      - name: Terraform Apply
+        if: ${{ inputs.apply == true }}
+        run: terraform apply -auto-approve tfplan
